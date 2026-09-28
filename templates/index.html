@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="Download TikTok videos quickly with our simple TikTok downloader."
+    >
+
+    <title>TikTok Downloader</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <main class="container">
+
+        <div class="logo">TT</div>
+
+        <h1>TikTok Downloader</h1>
+
+        <p class="subtitle">
+            Download TikTok videos without a watermark.
+        </p>
+
+        <div class="downloader-card">
+
+            <div class="input-wrapper">
+
+                <input
+                    type="url"
+                    id="url"
+                    placeholder="Paste TikTok video link..."
+                    autocomplete="off"
+                >
+
+                <button id="pasteBtn" type="button">
+                    Paste
+                </button>
+
+            </div>
+
+            <div class="actions">
+
+                <button id="downloadBtn" class="primary-btn">
+                    Download Video
+                </button>
+
+                <button id="clearBtn" class="clear-btn" type="button">
+                    Clear
+                </button>
+
+            </div>
+
+            <div id="status"></div>
+
+            <div id="result"></div>
+
+        </div>
+
+        <div class="features">
+
+            <div class="feature">
+                <span>⚡</span>
+                <strong>Fast</strong>
+                <small>Quick processing</small>
+            </div>
+
+            <div class="feature">
+                <span>🚫</span>
+                <strong>No Watermark</strong>
+                <small>When available</small>
+            </div>
+
+            <div class="feature">
+                <span>📱</span>
+                <strong>Mobile</strong>
+                <small>Works on phones</small>
+            </div>
+
+        </div>
+
+        <p class="footer">
+            Paste a TikTok link above to get started.
+        </p>
+
+    </main>
+
+    <script src="/static/script.js"></script>
+
+</body>
+</html>
