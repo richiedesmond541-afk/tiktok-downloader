@@ -11,10 +11,26 @@
 
     <title>TikTok Downloader</title>
 
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/style.css?v=2">
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="apple-touch-icon" href="/static/icons/icon.svg">
+    <meta name="theme-color" content="#050505">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="TikTok DL">
 </head>
 
 <body>
+
+    <div id="bootScreen" class="boot-screen">
+        <div class="boot-logo">TT</div>
+        <h2>TikTok Downloader</h2>
+        <p id="bootText">Initializing...</p>
+        <div class="boot-loader">
+            <div class="boot-progress"></div>
+        </div>
+    </div>
+
 
     <main class="container">
 
@@ -38,7 +54,8 @@
                 >
 
                 <button id="pasteBtn" type="button">
-                    Paste
+                    <span class="btn-icon">▣</span>
+                    <span>Paste</span>
                 </button>
 
             </div>
@@ -46,11 +63,13 @@
             <div class="actions">
 
                 <button id="downloadBtn" class="primary-btn">
-                    Download Video
+                    <span class="btn-icon">↓</span>
+                    <span>Download Video</span>
                 </button>
 
                 <button id="clearBtn" class="clear-btn" type="button">
-                    Clear
+                    <span class="btn-icon">×</span>
+                    <span>Clear</span>
                 </button>
 
             </div>
@@ -61,16 +80,25 @@
 
         </div>
 
+        <section class="history-card" id="historyCard" hidden>
+            <div class="history-header">
+                <strong>Download History</strong>
+                <button id="clearHistoryBtn" type="button">Clear History</button>
+            </div>
+
+            <div id="historyList"></div>
+        </section>
+
         <div class="features">
 
             <div class="feature">
-                <span>⚡</span>
+                <span>🚀</span>
                 <strong>Fast</strong>
                 <small>Quick processing</small>
             </div>
 
             <div class="feature">
-                <span>🚫</span>
+                <span>✨</span>
                 <strong>No Watermark</strong>
                 <small>When available</small>
             </div>
@@ -78,7 +106,7 @@
             <div class="feature">
                 <span>📱</span>
                 <strong>Mobile</strong>
-                <small>Works on phones</small>
+                <small>Works on Android &amp; iOS</small>
             </div>
 
         </div>

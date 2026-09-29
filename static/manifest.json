@@ -1,0 +1,18 @@
+{
+  "name": "TikTok Downloader",
+  "short_name": "TikTok DL",
+  "description": "Download TikTok videos without a watermark.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/static/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
