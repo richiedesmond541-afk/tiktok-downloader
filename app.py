@@ -1,11 +1,63 @@
 from flask import Flask, render_template, request, jsonify, Response
 import re
+import os
 import html
 import json
 import urllib.request
 import urllib.error
+from datetime import date
+from pathlib import Path
 
 app = Flask(__name__)
+
+STATS_FILE = Path("stats.json")
+
+def load_stats():
+    if not STATS_FILE.exists():
+        return {
+            "total_visits": 0,
+            "total_download_attempts": 0,
+            "successful_downloads": 0,
+            "failed_downloads": 0,
+            "today": str(date.today()),
+            "today_downloads": 0
+        }
+
+    try:
+        return json.loads(STATS_FILE.read_text())
+    except Exception:
+        return {
+            "total_visits": 0,
+            "total_download_attempts": 0,
+            "successful_downloads": 0,
+            "failed_downloads": 0,
+            "today": str(date.today()),
+            "today_downloads": 0
+        }
+
+
+def save_stats(stats):
+    STATS_FILE.write_text(json.dumps(stats, indent=2))
+
+
+def update_today(stats):
+    today = str(date.today())
+
+    if stats.get("today") != today:
+        stats["today"] = today
+        stats["today_downloads"] = 0
+
+
+def increment_stat(name):
+    stats = load_stats()
+    update_today(stats)
+    stats[name] = stats.get(name, 0) + 1
+
+    if name == "successful_downloads":
+        stats["today_downloads"] = stats.get("today_downloads", 0) + 1
+
+    save_stats(stats)
+
 
 TT_HOSTS = (
     "tiktok.com",
@@ -125,7 +177,36 @@ def get_video_url(tiktok_url):
 
 @app.route("/")
 def home():
+    increment_stat("total_visits")
     return render_template("index.html")
+
+
+@app.route("/admin")
+def admin():
+    auth = request.authorization
+
+    if not auth or auth.password != os.environ.get("ADMIN_PASSWORD"):
+        return Response(
+            "Authentication required.",
+            401,
+            {"WWW-Authenticate": 'Basic realm="Admin"'}
+        )
+
+    return render_template("admin.html")
+
+
+@app.route("/admin/stats")
+def admin_stats():
+    auth = request.authorization
+
+    if not auth or auth.password != os.environ.get("ADMIN_PASSWORD"):
+        return jsonify({"error": "Unauthorized"}), 401
+
+    stats = load_stats()
+    update_today(stats)
+    save_stats(stats)
+
+    return jsonify(stats)
 
 
 @app.route("/api/download", methods=["POST"])
@@ -140,13 +221,18 @@ def download():
         }), 400
 
     if not is_tiktok_url(url):
+        increment_stat("failed_downloads")
         return jsonify({
             "success": False,
             "error": "Please enter a valid TikTok URL."
         }), 400
 
+    increment_stat("total_download_attempts")
+
     try:
         label, video_url = get_video_url(url)
+
+        increment_stat("successful_downloads")
 
         return jsonify({
             "success": True,
@@ -156,12 +242,14 @@ def download():
         })
 
     except urllib.error.HTTPError as error:
+        increment_stat("failed_downloads")
         return jsonify({
             "success": False,
             "error": f"Extraction service returned HTTP {error.code}."
         }), 502
 
     except Exception as error:
+        increment_stat("failed_downloads")
         print("Download error:", repr(error))
 
         return jsonify({

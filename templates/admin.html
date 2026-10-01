@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#050505">
+    <title>Downloader Stats</title>
+    <link rel="stylesheet" href="/static/style.css?v=2">
+</head>
+
+<body>
+
+    <main class="container">
+        <div class="downloader-card">
+            <div class="logo">TT</div>
+
+            <h1>Downloader Stats</h1>
+            <p class="subtitle">Anonymous usage statistics</p>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span>👥</span>
+                    <strong id="visits">0</strong>
+                    <small>Total Visits</small>
+                </div>
+
+                <div class="stat-box">
+                    <span>📥</span>
+                    <strong id="attempts">0</strong>
+                    <small>Download Attempts</small>
+                </div>
+
+                <div class="stat-box">
+                    <span>✅</span>
+                    <strong id="success">0</strong>
+                    <small>Successful</small>
+                </div>
+
+                <div class="stat-box">
+                    <span>❌</span>
+                    <strong id="failed">0</strong>
+                    <small>Failed</small>
+                </div>
+
+                <div class="stat-box">
+                    <span>🔥</span>
+                    <strong id="today">0</strong>
+                    <small>Downloads Today</small>
+                </div>
+
+                <div class="stat-box">
+                    <span>📈</span>
+                    <strong id="rate">0%</strong>
+                    <small>Success Rate</small>
+                </div>
+            </div>
+
+            <div class="admin-actions">
+                <button id="refreshStats" type="button">↻ Refresh Stats</button>
+            </div>
+
+            <p id="statsStatus">Loading statistics...</p>
+        </div>
+    </main>
+
+    <script>
+        async function loadStats() {
+            try {
+                const response = await fetch("/admin/stats");
+                const data = await response.json();
+
+                document.getElementById("visits").textContent =
+                    data.total_visits || 0;
+
+                document.getElementById("attempts").textContent =
+                    data.total_download_attempts || 0;
+
+                document.getElementById("success").textContent =
+                    data.successful_downloads || 0;
+
+                document.getElementById("failed").textContent =
+                    data.failed_downloads || 0;
+
+                document.getElementById("today").textContent =
+                    data.today_downloads || 0;
+
+                const attempts = Number(data.total_download_attempts || 0);
+                const successful = Number(data.successful_downloads || 0);
+                const rate = attempts
+                    ? Math.round((successful / attempts) * 100)
+                    : 0;
+
+                document.getElementById("rate").textContent =
+                    `${rate}%`;
+
+                document.getElementById("statsStatus").textContent =
+                    `Updated ${new Date().toLocaleTimeString()}`;
+            } catch {
+                document.getElementById("statsStatus").textContent =
+                    "Unable to load statistics.";
+            }
+        }
+
+        document.getElementById("refreshStats")
+            .addEventListener("click", loadStats);
+
+        loadStats();
+        setInterval(loadStats, 30000);
+    </script>
+
+</body>
+</html>
